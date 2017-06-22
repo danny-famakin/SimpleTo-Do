@@ -20,14 +20,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        readItems();
-        itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
         lvitems = (ListView) findViewById(R.id.Items);
+        items = new ArrayList<>();
+        itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
         lvitems.setAdapter(itemsAdapter);
-
-        //items.add("First item");
-        //items.add("Second item");
+        setupListViewListener();
     }
 
     public void onAddItem(View v) {
@@ -39,18 +36,22 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Item added to list", Toast.LENGTH_SHORT).show();
     }
     private void setupListViewListener() {
-        Log.i("MainActivity", "Setting up listener on list view");
+    //set the list veiw
+
         lvitems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("MainActivity", "Item removed from list: " + position);
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id){
+                //remove the item in the list
                 items.remove(position);
+                //notify the adapter that underlying dataset changed
                 itemsAdapter.notifyDataSetChanged();
+                //return to tell framework the long click was consumed
+                //Log.i("MainActivity", "Removed item " + position);
                 writeItems();
                 return true;
             }
         });
-    }
+        }
     private File getDataFile() {
         return new File(getFilesDir(), "todo.txt");
     }
